@@ -11,6 +11,10 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: { type: String, unique: true },
     },
+    whitelisted: {
+      type: Boolean,
+      default: false,
+    },
     bio: String,
     role: {
       type: String,
@@ -33,10 +37,10 @@ const UserSchema = new mongoose.Schema(
     },
     profileImage: String,
     bannerImage: String,
-    // favouriteNFT: [{ type: mongoose.Schema.ObjectId, ref: "Nft" }],
     verification_url: String,
     kycEventType: String,
     reviewStatus: String,
+    
   },
   { timestamps: true }
 );
