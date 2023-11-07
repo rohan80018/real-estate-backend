@@ -10,6 +10,6 @@ router
     protect,
     authorize("admin"),
     // validate(nftCreateReqSchema),
-    propertyController.createNft
+    propertyController.createProperty
   );
 module.exports = router;

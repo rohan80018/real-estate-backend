@@ -45,10 +45,13 @@ exports.validateSignature = asyncHandler(async (req, res, next) => {
       if (user) {
         let signerAddr;
         try {
+          console.log("hi", user);
+          console.log("hi111", signature);
           signerAddr = await ethers.utils.verifyMessage(
             user.signatureMessage,
             signature
           );
+          
         } catch (err) {
           res.status(400).json({
             success: false,

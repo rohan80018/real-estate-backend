@@ -1,7 +1,7 @@
 const PropertyModel = require("../models/Property");
 const asyncHandler = require("../middlewares/async");
 
-exports.createNft = asyncHandler(async (req, res, next) => {
+exports.createProperty = asyncHandler(async (req, res, next) => {
   try {
     //   const { id, wallet_address, role } = req.user;
     PropertyModel.create(
