@@ -27,9 +27,6 @@ const RequestSchema = new mongoose.Schema (
         withdrawnInstallment: {
             type: Number,
         },
-        withdrawnTimestamp: {
-            type: Date,
-        }
     },
     { timestamps: true }
 )

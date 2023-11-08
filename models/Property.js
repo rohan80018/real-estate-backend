@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+const rentHistorySchema = new mongoose.Schema(
+  {
+    amount: Number,
+  },
+  { timestamps: true }
+);
+
+const withdrawEarningSchema = new mongoose.Schema(
+    {
+      user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+        amount: Number,
+    },
+    { timestamps: true }
+
+);
+
 const PropertySchema = new mongoose.Schema({
   name: String,
   mediaLinks: [
@@ -97,6 +116,17 @@ const PropertySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  totalRentPaid: {
+    type: Number,
+    required: true,
+  },
+  rentInstallment: {
+    type: Number,
+    required: true,
+  },
+  rentHistory: [rentHistorySchema],
+  withdrawHistory : [withdrawEarningSchema],
+
 });
 
 module.exports = mongoose.model("Property", PropertySchema);

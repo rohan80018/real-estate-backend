@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+const withdrawnHistorySchema = new mongoose.Schema(
+  {
+    amount: Number,
+  },
+  { timestamps: true }
+);
+
+const withdrawEarningSchema = new mongoose.Schema(
+  {
+    property: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Property",
+  },
+      amount: Number,
+  },
+  { timestamps: true }
+
+);
+
 const UserSchema = new mongoose.Schema(
   {
     wallet_address: {
@@ -40,6 +59,7 @@ const UserSchema = new mongoose.Schema(
     verification_url: String,
     kycEventType: String,
     reviewStatus: String,
+    withdrawnHistory: [withdrawnHistorySchema],
     
   },
   { timestamps: true }
