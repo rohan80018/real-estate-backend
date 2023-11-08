@@ -13,6 +13,7 @@ dotenv.config({ path: "./.env" });
 connectDB();
 
 const auth = require("./routes/auth");
+const user = require("./routes/user");
 const property = require("./routes/property");
 
 const app = express();
@@ -33,7 +34,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", auth);
-// app.use("/api/v1/property", property);
+app.use("/api/v1/property", property);
+app.use("/api/v1/user", user);
 
 // app.use(errorHandler);
 

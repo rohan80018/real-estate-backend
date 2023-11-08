@@ -89,9 +89,14 @@ const PropertySchema = new mongoose.Schema({
   propertyContractAddress: {
     type: { type: String, unique: true },
   },
-  PayRent: {
+  grossRent: {
     type: Number,
-  }
+    required: true,
+  },
+  rentReceived: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Property", PropertySchema);
