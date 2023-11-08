@@ -38,12 +38,12 @@ exports.payRent = asyncHandler(async (req, res, next) => {
       {
         grossRent: grossRent,
         rentReceived: rentReceived,
-        $inc : { totalRentPaid : rentReceived, rentInstallment : 1},
+        $inc: { totalRentPaid: rentReceived, rentInstallment: 1 },
         $push: {
-            rentHistory: {
-                amount: rentReceived,
-            },
+          rentHistory: {
+            amount: rentReceived,
           },
+        },
       },
       null,
       async (err, doc) => {
@@ -57,17 +57,13 @@ exports.payRent = asyncHandler(async (req, res, next) => {
               message: "Rent Paid successfully",
             });
           } else {
-            res
-              .status(400)
-              .json({ success: false, message: "Failed" });
+            res.status(400).json({ success: false, message: "Failed" });
           }
         }
       }
     );
   } catch (err) {
-    res
-      .status(401)
-      .json({ success: false, message: "Failed to pay rent" });
+    res.status(401).json({ success: false, message: "Failed to pay rent" });
   }
 });
 
@@ -104,98 +100,175 @@ exports.fetchUsername = asyncHandler(async (req, res, next) => {
 });
 
 exports.withdrawEarning = asyncHandler(async (req, res, next) => {
-    try {
-        const { withdrawnAmount, withdrawnInstallment } = req.body;
-        const { requestId } = req.params;
-        RequestModel.findOneAndUpdate(
-          {
-            _id: requestId,
-          },
-          {
-            withdrawnAmount: grossRent,
-            withdrawnInstallment: rentReceived,
-            $inc : { totalRentPaid : rentReceived, rentInstallment : 1},
-            $push: {
-                rentHistory: {
-                    amount: rentReceived,
+  try {
+    const { withdrawnAmount } = req.body;
+    const { requestId } = req.params;
+    const { wallet_address } = req.user;
+    RequestModel.findOneAndUpdate(
+      {
+        _id: requestId,
+      },
+      {
+        withdrawnAmount: withdrawnAmount,
+      },
+      null,
+      async (err, doc) => {
+        if (err) {
+          res.status(401).json({ success: false });
+        } else {
+          if (!!doc) {
+            let userData = await UserModel.findOneAndUpdate(
+              { wallet_address },
+              {
+                $push: {
+                  withdrawnHistory: {
+                    property: doc.property,
+                    amount: req.body.amount,
+                  },
                 },
-              },
-          },
-          null,
-          async (err, doc) => {
-            if (err) {
-              res.status(401).json({ success: false });
-            } else {
-              if (!!doc) {
+              }
+            );
+            if (userData) {
+              let propertyData = await PropertyModel.findOneAndUpdate(
+                { _id: doc.property },
+                {
+                  $push: {
+                    withdrawHistory: {
+                      user: userData._id,
+                      amount: req.body.amount,
+                    },
+                  },
+                }
+              );
+              if (propertyData) {
                 res.status(201).json({
                   success: true,
                   _id: doc._id,
-                  message: "Rent Paid successfully",
+                  message: "propertyData updated",
                 });
               } else {
-                res
-                  .status(400)
-                  .json({ success: false, message: "Failed" });
+                res.status(400).json({
+                  success: false,
+                  message: "propertyData not updated",
+                });
               }
+            } else {
+              res
+                .status(400)
+                .json({ success: false, message: "userData not updated" });
             }
+          } else {
+            res.status(400).json({ success: false, message: "Failed" });
           }
-        );
-      } catch (err) {
-        res
-          .status(401)
-          .json({ success: false, message: "Failed to pay rent" });
+        }
       }
+    );
+  } catch (err) {
+    res.status(401).json({ success: false, message: "Failed to pay rent" });
+  }
 });
 
+exports.updateUser = asyncHandler(async (req, res, next) => {
+  try {
+    const { wallet_address } = req.params;
+    UserModel.findOneAndUpdate(
+      { wallet_address },
+      { ...req.body },
+      { new: true },
+      async (err, doc) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ success: false, message: "Profile failed to update" });
+        } else {
+          if (!!doc) {
+            res
+              .status(201)
+              .json({ success: true, message: "Profile successfully updated" });
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Wrong wallet address" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});
 
-// exports.updateUser = asyncHandler(async (req, res, next) => {
-//     try {
-//       const remoteIp = getRemoteIp(req);
-//       const { wallet_address } = req.params;
-//       const { role } = req.user;
-//       UserModel.findOneAndUpdate(
-//         { wallet_address },
-//         { ...req.body },
-//         { new: true },
-//         async (err, doc) => {
-//           if (err) {
-//             res
-//               .status(400)
-//               .json({ success: false, message: "Profile failed to update" });
-//           } else {
-//             if (!!doc) {
-//               await mixpanel.people(doc._id, {
-//                 name: doc.name,
-//                 user_name: doc.username,
-//                 wallet_address: doc.wallet_address,
-//                 email: !!doc.email ? doc.email : "",
-//                 profile_type: role,
-//                 ip: remoteIp,
-//               });
-//               await mixpanel.track("User profile updated", {
-//                 distinct_id: doc._id,
-//                 name: doc.name,
-//                 user_name: doc.username,
-//                 wallet_address: doc.wallet_address,
-//                 email: !!doc.email ? doc.email : "",
-//                 profile_type: role,
-//                 ip: remoteIp,
-//               });
-//               res
-//                 .status(201)
-//                 .json({ success: true, message: "Profile successfully updated" });
-//             } else {
-//               res
-//                 .status(400)
-//                 .json({ success: false, message: "Wrong wallet address" });
-//             }
-//           }
-//         }
-//       );
-//     } catch (err) {
-//       res
-//         .status(400)
-//         .json({ success: false, message: "Profile failed to update" });
-//     }
-//   });
-  
+exports.buyRequest = asyncHandler(async (req, res, next) => {
+  try {
+    RequestModel.create(
+      {
+        ...req.body,
+      },
+      async (err, doc) => {
+        if (err) {
+          res.status(401).json({ success: false });
+        } else {
+          if (!!doc) {
+            res.status(201).json({
+              success: true,
+              _id: doc._id,
+              message: "Property successfully created",
+            });
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Failed to create property" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});
+
+exports.acceptRequest = asyncHandler(async (req, res, next) => {
+  try {
+    const { requestId } = req.params;
+    const { wallet_address } = req.user;
+    RequestModel.findOneAndUpdate(
+      { _id: requestId },
+      { status: "accepted" },
+      { new: true },
+      async (err, doc) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ success: false, message: "Profile failed to update" });
+        } else {
+          if (!!doc) {
+            let userData = UserModel.findOneAndUpdate(
+              { wallet_address },
+              { whitelisted: true }
+            );
+            if (userData) {
+              res
+                .status(201)
+                .json({
+                  success: true,
+                  message: "Profile successfully updated",
+                });
+            }
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Wrong wallet address" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});

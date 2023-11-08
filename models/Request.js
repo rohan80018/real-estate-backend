@@ -6,6 +6,10 @@ const RequestSchema = new mongoose.Schema (
             type: mongoose.Schema.ObjectId,
             ref: "Property",
         },
+        user: {
+            type: mongoose.Schema.ObjectId,
+            ref: "User",
+        },
         requestType: {
             type: String,
             enum: ["buy", "sell"],
@@ -22,9 +26,6 @@ const RequestSchema = new mongoose.Schema (
             type: Number,
         },
         withdrawnAmount: {
-            type: Number,
-        },
-        withdrawnInstallment: {
             type: Number,
         },
     },

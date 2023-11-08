@@ -22,6 +22,14 @@ router
 );
 
 router
+.route("/buyRequest")
+.put(protect, authorize("user"), userController.buyRequest);
+
+router
+.route("/acceptRequest")
+.put(protect, authorize("admin"), userController.acceptRequest);
+
+router
 .route("/payRent/:propertyId")
 .post(
   protect,
@@ -32,8 +40,8 @@ router
 router
   .route("/profile")
   .get(
-    // protect,
-    // authorize("user", "admin"),
+    protect,
+    authorize("user", "admin"),
     advancedResults(UserModel, "-signatureMessage -__v -termOfService"),
     userController.fetchUsers
   );
@@ -47,16 +55,18 @@ router
   );
 
   router
-  .route("/withdrawearning")
-  .get(
+  .route("/withdrawearning/:requestId")
+  .post(
     // protect,
     authorize("user"),
     userController.withdrawEarning
   );
 
-//   router
-//   .route("/updateProfile/:wallet_address")
-//   .put(protect, authorize("user"), userController.updateUser);
+  router
+  .route("/updateProfile/:wallet_address")
+  .put(protect, authorize("user"), userController.updateUser);
+
+ 
 
 
 module.exports = router;

@@ -1,12 +1,5 @@
 const mongoose = require("mongoose");
 
-const withdrawnHistorySchema = new mongoose.Schema(
-  {
-    amount: Number,
-  },
-  { timestamps: true }
-);
-
 const withdrawEarningSchema = new mongoose.Schema(
   {
     property: {
@@ -59,7 +52,7 @@ const UserSchema = new mongoose.Schema(
     verification_url: String,
     kycEventType: String,
     reviewStatus: String,
-    withdrawnHistory: [withdrawnHistorySchema],
+    withdrawnHistory: [withdrawEarningSchema],
     
   },
   { timestamps: true }
