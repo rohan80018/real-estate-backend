@@ -23,15 +23,15 @@ router
 
 router
 .route("/buyRequest")
-.put(protect, authorize("user"), userController.buyRequest);
+.post(protect, authorize("user"), userController.buyRequest);
 
 router
-.route("/acceptRequest")
+.route("/acceptRequest/:requestId")
 .put(protect, authorize("admin"), userController.acceptRequest);
 
 router
 .route("/payRent/:propertyId")
-.post(
+.put(
   protect,
   authorize("admin"),
   userController.payRent
@@ -57,7 +57,7 @@ router
   router
   .route("/withdrawearning/:requestId")
   .post(
-    // protect,
+    protect,
     authorize("user"),
     userController.withdrawEarning
   );

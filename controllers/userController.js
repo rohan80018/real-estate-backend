@@ -10,18 +10,38 @@ const { getRemoteIp } = require("../utils/utils");
 
 exports.onboardUser = asyncHandler(async (req, res, next) => {
   try {
-    UserModel.findOneAndUpdate(
-      { wallet_address: req.user.wallet_address },
-      { ...req.body },
-      { new: true },
-      async (err, docs) => {
-        if (err) {
-          res.status(400).json({ success: false });
-        } else {
-          res.status(200).json({ success: true });
-        }
+
+    const { username, email } = req.body;
+    const user = await UserModel.findOne({
+      wallet_address: req.user.wallet_address,
+    });
+    if (user) {
+      if (user.username == username || user.email == email) {
+        res.status(201).json({
+          success: true,
+          massage: "username or email already in use",
+        });
       }
-    );
+      else{
+        UserModel.findOneAndUpdate(
+            { wallet_address: req.user.wallet_address },
+            { ...req.body },
+            { new: true },
+            async (err, docs) => {
+              if (err) {
+                res.status(400).json({ success: false });
+              } else {
+                res.status(200).json({ success: true });
+              }
+            }
+        );
+      }
+    } else {
+      res.status(201).json({
+        success: true,
+        massage: "No user",
+      });
+    }
   } catch (err) {
     res.status(400).json({ success: false });
   }
@@ -214,7 +234,7 @@ exports.buyRequest = asyncHandler(async (req, res, next) => {
             res.status(201).json({
               success: true,
               _id: doc._id,
-              message: "Property successfully created",
+              message: "Request successfully created",
             });
           } else {
             res
@@ -234,7 +254,6 @@ exports.buyRequest = asyncHandler(async (req, res, next) => {
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {
     const { requestId } = req.params;
-    const { wallet_address } = req.user;
     RequestModel.findOneAndUpdate(
       { _id: requestId },
       { status: "accepted" },
@@ -246,8 +265,8 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
             .json({ success: false, message: "Profile failed to update" });
         } else {
           if (!!doc) {
-            let userData = UserModel.findOneAndUpdate(
-              { wallet_address },
+            let userData = await UserModel.findOneAndUpdate(
+              { _id : doc.user },
               { whitelisted: true }
             );
             if (userData) {
@@ -255,7 +274,7 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
                 .status(201)
                 .json({
                   success: true,
-                  message: "Profile successfully updated",
+                  message: "Request Accepted successfully",
                 });
             }
           } else {
