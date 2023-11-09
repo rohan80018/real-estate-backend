@@ -41,7 +41,6 @@ const PropertySchema = new mongoose.Schema({
   },
   validatorName: {
     type: String,
-    required: true,
   },
   about: {
     type: String,
@@ -73,7 +72,7 @@ const PropertySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  TotalPrice: {
+  totalPrice: {
     type: Number,
     required: true,
   },
@@ -83,46 +82,37 @@ const PropertySchema = new mongoose.Schema({
   },
   rentPerToken: {
     type: Number,
-    required: true,
+    // required: true,
   },
   rentStartDate: {
     type: Date,
-    required: true,
   },
   rentSubsidy: {
     type: Number,
-    required: true,
   },
   expectedIncome: {
     type: Number,
-    required: true,
   },
   rentalType: {
     type: String,
-    required: true,
   },
   rentpayingDuration: {
     type: Number,
-    required: true,
   },
   propertyContractAddress: {
     type: { type: String, unique: true },
   },
   grossRent: {
     type: Number,
-    required: true,
   },
   rentReceived: {
     type: Number,
-    required: true,
   },
   totalRentPaid: {
     type: Number,
-    required: true,
   },
   rentInstallment: {
     type: Number,
-    required: true,
   },
   rentHistory: [rentHistorySchema],
   withdrawHistory : [withdrawEarningSchema],

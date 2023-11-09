@@ -16,8 +16,6 @@ exports.generateNonce = asyncHandler(async (req, res, next) => {
         wallet_address,
         signatureMessage,
         name: "",
-        username: "",
-        email: "",
         role: "user",
         termOfService: false,
       });
@@ -30,6 +28,7 @@ exports.generateNonce = asyncHandler(async (req, res, next) => {
     res.status(201).json({ success: true, signatureMessage });
   } catch (err) {
     res.status(400).json({ success: false });
+    console.log("erroree: " + err);
   }
 });
 

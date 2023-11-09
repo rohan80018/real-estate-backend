@@ -5,13 +5,21 @@ const BuySell = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "Property",
     },
+    seller: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+    },
+    buyer: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+    },
     requestFor: {
         type: String,
         enum: ["aconomy", "marketplace"],
     },
     status: {
         type: String,
-        enum: ["none", "accepted", "withdrawn"],
+        enum: ["none", "accepted", "cancel"],
         default: "none",
     },
     tokenPrice: {

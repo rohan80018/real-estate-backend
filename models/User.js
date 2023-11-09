@@ -19,9 +19,9 @@ const UserSchema = new mongoose.Schema(
       unique: true,
     },
     name: String,
-    username: { type: String, unique: true },
+    username: { type: String },
     email: {
-      type: { type: String, unique: true },
+      type: { type: String },
     },
     whitelisted: {
       type: Boolean,

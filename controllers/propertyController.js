@@ -10,6 +10,7 @@ exports.createProperty = asyncHandler(async (req, res, next) => {
       },
       async (err, doc) => {
         if (err) {
+          console.log("erroree: " + err);
           res.status(401).json({ success: false });
         } else {
           if (!!doc) {
@@ -27,8 +28,10 @@ exports.createProperty = asyncHandler(async (req, res, next) => {
       }
     );
   } catch (err) {
+    console.log("erroree: " + err);
     res
       .status(401)
       .json({ success: false, message: "Failed to create property" });
+      
   }
 });

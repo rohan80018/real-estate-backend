@@ -6,7 +6,6 @@ const hpp = require("hpp");
 const cors = require("cors");
 const connectDB = require("./config/db");
 // const errorHandler = require("./middleware/error");
-const morgan = require("morgan");
 
 dotenv.config({ path: "./.env" });
 
@@ -21,9 +20,9 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+// if (process.env.NODE_ENV === "development") {
+//   app.use(morgan("dev"));
+// }
 
 app.use(mongoSanitize());
 app.use(helmet());
