@@ -15,7 +15,8 @@ const BuySell = new mongoose.Schema({
     },
     requestFor: {
         type: String,
-        enum: ["aconomy", "marketplace"],
+        enum: ["none","aconomy", "marketplace"],
+        default: "none",
     },
     status: {
         type: String,
