@@ -271,6 +271,39 @@ exports.buyRequest = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.getAllRequests = asyncHandler(async (req, res, next) => {
+  try {
+    res.status(200).json(res.advancedResults);
+  } catch (err) {
+    res.status(400).json({ success: false });
+  }
+});
+
+exports.getRequest = asyncHandler(async (req, res, next) => {
+  try {
+    const { requestId } = req.params;
+    const request = await RequestModel.findOne({
+      _id : requestId,
+    });
+    if (request) {
+      res.status(201).json({
+        success: true,
+        massage: "Request exists",
+        request: request,
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        massage: "No Request Found",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+});
+
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {
     const { requestId } = req.params;

@@ -4,6 +4,8 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const advancedResults = require("../middlewares/advancedResults");
 const UserModel = require("../models/User");
+const RequestModel = require("../models/Request");
+const PropertyModel = require("../models/Property");
 
 const { protect, authorize } = require("../middlewares/auth");
 const validate = require("../middlewares/validateReqSchema");
@@ -24,6 +26,24 @@ router
 router
 .route("/buyRequest")
 .post(protect, authorize("user"), userController.buyRequest);
+
+router
+.route("/allRequests")
+.get(
+    protect, 
+    authorize("user", "admin"), 
+    advancedResults(RequestModel),
+    userController.getAllRequests
+  );
+
+  router
+.route("/request/:requestId")
+.get(
+    protect, 
+    authorize("user", "admin"), 
+    advancedResults(RequestModel),
+    userController.getRequest
+  );
 
 router
 .route("/acceptRequest/:requestId")
