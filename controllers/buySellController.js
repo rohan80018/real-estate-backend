@@ -1,7 +1,5 @@
 const asyncHandler = require("../middlewares/async");
-const PropertyModel = require("../models/Property");
 const BuySellModel = require("../models/BuySell");
-const UserModel = requie("../models/Users");
 
 exports.buyfromAconomy = asyncHandler(async (req, res, next) => {
     const { id, wallet_address, role } = req.user;
