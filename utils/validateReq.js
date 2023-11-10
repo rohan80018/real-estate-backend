@@ -5,3 +5,8 @@ const userOnBoardReqSchema = [
     body("username", "The username field is required").notEmpty(),
     body("email", "The email field is required").notEmpty(),
   ];
+
+
+module.exports = {
+  userOnBoardReqSchema
+};
