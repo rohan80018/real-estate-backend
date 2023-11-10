@@ -7,7 +7,6 @@ exports.buyfromAconomy = asyncHandler(async (req, res, next) => {
         BuySellModel.create(
             {
                 ...req.body,
-                seller : "aconomy",
                 buyer : id,
             },
             async (err, doc) => {
@@ -49,7 +48,7 @@ exports.buyfromMarketPlace = asyncHandler(async (req, res, next) => {
               buyer: id,
               status: "accepted",
             },
-            none,
+            { new: true },
             async (err, doc) => {
               if (err) {
                 console.log("erroree: " + err);
@@ -78,12 +77,12 @@ exports.buyfromMarketPlace = asyncHandler(async (req, res, next) => {
 });
 
 exports.sell = asyncHandler(async (req, res, next) => {
-    const { id, wallet_address, role } = req.user;
+    // const { id, wallet_address, role } = req.user;
     try {
         BuySellModel.create(
             {
               ...req.body,
-              seller: id,
+              // seller: id,
             },
             async (err, doc) => {
               if (err) {
@@ -120,7 +119,7 @@ exports.cancelSale = asyncHandler(async (req, res, next) => {
             {      
               status: "cancel",
             },
-            none,
+            { new: true },
             async (err, doc) => {
               if (err) {
                 console.log("erroree: " + err);
