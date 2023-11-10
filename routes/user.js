@@ -63,7 +63,7 @@ router
   );
 
   router
-  .route("/updateProfile/:wallet_address")
+  .route("/updateProfile")
   .put(protect, authorize("user"), userController.updateUser);
 
  

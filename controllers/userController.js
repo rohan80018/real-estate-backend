@@ -104,6 +104,7 @@ exports.fetchUsername = asyncHandler(async (req, res, next) => {
     if (user) {
       res.status(201).json({
         success: true,
+        massage: "user exists",
         user: user,
       });
     } else {
@@ -143,7 +144,7 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
                 $push: {
                   withdrawnHistory: {
                     property: doc.property,
-                    amount: req.body.amount,
+                    amount: withdrawnAmount,
                   },
                 },
               }
@@ -155,7 +156,7 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
                   $push: {
                     withdrawHistory: {
                       user: userData._id,
-                      amount: req.body.amount,
+                      amount: withdrawnAmount,
                     },
                   },
                 }
@@ -164,12 +165,12 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
                 res.status(201).json({
                   success: true,
                   _id: doc._id,
-                  message: "propertyData updated",
+                  message: "Withdrawn",
                 });
               } else {
                 res.status(400).json({
                   success: false,
-                  message: "propertyData not updated",
+                  message: "Withdrawn",
                 });
               }
             } else {
@@ -190,29 +191,48 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
   try {
-    const { wallet_address } = req.params;
-    UserModel.findOneAndUpdate(
-      { wallet_address },
-      { ...req.body },
-      { new: true },
-      async (err, doc) => {
-        if (err) {
-          res
-            .status(400)
-            .json({ success: false, message: "Profile failed to update" });
-        } else {
-          if (!!doc) {
-            res
-              .status(201)
-              .json({ success: true, message: "Profile successfully updated" });
-          } else {
-            res
-              .status(400)
-              .json({ success: false, message: "Wrong wallet address" });
-          }
-        }
+    const { wallet_address } = req.user;
+    const { username, email } = req.body;
+    const user = await UserModel.findOne({
+      wallet_address: wallet_address,
+    });
+    if (user) {
+      if (user.username == username || user.email == email) {
+        res.status(201).json({
+          success: true,
+          massage: "username or email already in use",
+        });
       }
-    );
+      else{
+        UserModel.findOneAndUpdate(
+              { wallet_address },
+              { ...req.body },
+              { new: true },
+              async (err, doc) => {
+                if (err) {
+                  res
+                    .status(400)
+                    .json({ success: false, message: "Profile failed to update" });
+                } else {
+                  if (!!doc) {
+                    res
+                      .status(201)
+                      .json({ success: true, message: "Profile successfully updated" });
+                  } else {
+                    res
+                      .status(400)
+                      .json({ success: false, message: "Wrong wallet address" });
+                  }
+                }
+              }
+        );
+      }
+    } else {
+      res.status(201).json({
+        success: true,
+        massage: "No user",
+      });
+    }
   } catch (err) {
     res
       .status(400)
