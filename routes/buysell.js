@@ -5,15 +5,15 @@ const buysellController = require("../controllers/buySellController");
 
 
 router
-  .route("/buyfromAconomy")
+  .route("/acceptfromAconomy")
   .post(
     protect,
-    authorize("user"),
-    buysellController.buyfromAconomy
+    authorize("admin"),
+    buysellController.acceptfromAconomy
   );
 
 router
-  .route("/buyfromMarketPlace/:buySellId")
+  .route("/buyfromMarketPlace")
   .post(
     protect,
     authorize("user"),
@@ -29,7 +29,7 @@ router
   );
 
 router
-  .route("/cancelSale/:buySellId")
+  .route("/cancelSale")
   .post(
     protect,
     authorize("user"),

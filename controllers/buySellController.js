@@ -1,35 +1,37 @@
 const asyncHandler = require("../middlewares/async");
 const BuySellModel = require("../models/BuySell");
 
-exports.buyfromAconomy = asyncHandler(async (req, res, next) => {
-    const { id, wallet_address, role } = req.user;
+exports.acceptfromAconomy = asyncHandler(async (req, res, next) => {
+    const { id } = req.user;
+    const { saleId } = req.body;
     try {
-        BuySellModel.create(
-            {
-                ...req.body,
-                buyer : id,
-            },
-            async (err, doc) => {
-                if (err) {
-                console.log("erroree: " + err);
-                res.status(401).json({ success: false });
-                } else {
-                if (!!doc) {
-                    res.status(201).json({
-                    success: true,
-                    _id: doc._id,
-                    message: "Bought successfully",
-                    });
-                } else {
-                    res
-                    .status(400)
-                    .json({ success: false, message: "Failed to buy property" });
-                }
-                }
+        BuySellModel.findOneAndUpdate(
+          {_saleId : saleId},
+          {
+            buyer: id,
+            status: "accepted",
+          },
+          { new: true },
+          async (err, doc) => {
+            if (err) {
+              console.log("error: " + err);
+              res.status(401).json({ success: false });
+            } else {
+              if (!!doc) {
+                res.status(201).json({
+                  success: true,
+                  _id: doc._id,
+                  message: "Bought successfully",
+                });
+              } else {
+                res
+                  .status(400)
+                  .json({ success: false, message: "Failed to buy property" });
+              }
             }
-            );
+          }
+        );
     } catch (err) {
-            console.log("erroree: " + err);
             res
             .status(401)
             .json({ success: false, message: "Failed to buy property" });
@@ -39,11 +41,12 @@ exports.buyfromAconomy = asyncHandler(async (req, res, next) => {
 });
 
 exports.buyfromMarketPlace = asyncHandler(async (req, res, next) => {
-    const { id, wallet_address, role } = req.user;
-    const { buySellId } = req.params;
+    const { id, whitelisted } = req.user;
+    const { saleId } = req.body;
     try {
+      if(whitelisted){
         BuySellModel.findOneAndUpdate(
-            {_id : buySellId},
+            {_saleId : saleId},
             {
               buyer: id,
               status: "accepted",
@@ -51,7 +54,7 @@ exports.buyfromMarketPlace = asyncHandler(async (req, res, next) => {
             { new: true },
             async (err, doc) => {
               if (err) {
-                console.log("erroree: " + err);
+                console.log("error: " + err);
                 res.status(401).json({ success: false });
               } else {
                 if (!!doc) {
@@ -67,9 +70,14 @@ exports.buyfromMarketPlace = asyncHandler(async (req, res, next) => {
                 }
               }
             }
-          );
+        );
+      } else {
+          res
+            .status(401)
+            .json({ success: false, message: "Not whitelisted user" });
+      }
     } catch (err) {
-          console.log("erroree: " + err);
+          console.log("error: " + err);
           res
             .status(401)
             .json({ success: false, message: "Failed to buy property" });
@@ -77,16 +85,16 @@ exports.buyfromMarketPlace = asyncHandler(async (req, res, next) => {
 });
 
 exports.sell = asyncHandler(async (req, res, next) => {
-    // const { id, wallet_address, role } = req.user;
+    const { id } = req.user;
     try {
         BuySellModel.create(
             {
               ...req.body,
-              // seller: id,
+              seller: id,
             },
             async (err, doc) => {
               if (err) {
-                console.log("erroree: " + err);
+                console.log("error: " + err);
                 res.status(401).json({ success: false });
               } else {
                 if (!!doc) {
@@ -104,7 +112,7 @@ exports.sell = asyncHandler(async (req, res, next) => {
             }
           );
     } catch (err) {
-          console.log("erroree: " + err);
+          console.log("error: " + err);
           res
             .status(401)
             .json({ success: false, message: "Failed to list property" });
@@ -112,17 +120,20 @@ exports.sell = asyncHandler(async (req, res, next) => {
 });
 
 exports.cancelSale = asyncHandler(async (req, res, next) => {
-    const { buySellId } = req.params;
+    // const { buySellId } = req.params;
+    const { saleId } = req.body;
     try {
+      const buysellObj = await BuySellModel.findOne({_saleId : saleId});
+      if(buysellObj && buysellObj.status!="accepted"){
         BuySellModel.findOneAndUpdate(
-            {_id : buySellId},
+            {_saleId : saleId},
             {      
               status: "cancel",
             },
             { new: true },
             async (err, doc) => {
               if (err) {
-                console.log("erroree: " + err);
+                console.log("error: " + err);
                 res.status(401).json({ success: false });
               } else {
                 if (!!doc) {
@@ -139,8 +150,13 @@ exports.cancelSale = asyncHandler(async (req, res, next) => {
               }
             }
           );
+      } else {
+        res
+            .status(401)
+            .json({ success: false, message: "Already accepted" });    
+      }
     } catch (err) {
-          console.log("erroree: " + err);
+          console.log("error: " + err);
           res
             .status(401)
             .json({ success: false, message: "Failed to cancel" });       

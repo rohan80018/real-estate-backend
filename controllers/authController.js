@@ -28,7 +28,7 @@ exports.generateNonce = asyncHandler(async (req, res, next) => {
     res.status(201).json({ success: true, signatureMessage });
   } catch (err) {
     res.status(400).json({ success: false });
-    console.log("erroree: " + err);
+    console.log("error: " + err);
   }
 });
 

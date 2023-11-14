@@ -29,7 +29,11 @@ const BuySellSchema = new mongoose.Schema(
     },
     tokenValue: {
         type: Number,
-    }},
+    },
+    _saleId: {
+        type: Number,
+    }
+    },
     { timestamps: true }
 );
 
