@@ -20,15 +20,24 @@ const withdrawEarningSchema = new mongoose.Schema(
 );
 
 const PropertySchema = new mongoose.Schema({
-  name: String,
-  mediaLinks: [
-    {
+  propertyName: {
+    type: String,
+    required: true,
+  },
+  mediaLinks: {
+    type: [
+      {
       mediaType: { type: String, enum: ["image", "video", "audio"] },
       mediaLink: String,
-    },
-  ],
+      }
+    ],
+    required: true,
+  },
   assetJurisdiction: {
-    country: String,
+    country: {
+      type: String,
+      required: true,
+    },
     area: String,
   },
   ownerName: {
@@ -41,6 +50,7 @@ const PropertySchema = new mongoose.Schema({
   },
   validatorName: {
     type: String,
+    required: true,
   },
   about: {
     type: String,
@@ -82,38 +92,117 @@ const PropertySchema = new mongoose.Schema({
   },
   rentPerToken: {
     type: Number,
-    // required: true,
+    required: true,
   },
   rentStartDate: {
     type: Date,
+    required: true,
   },
   rentSubsidy: {
     type: Number,
+    required: true,
   },
   expectedIncome: {
     type: Number,
+    required: true,
   },
   rentalType: {
     type: String,
+    required: true,
+  },
+  rented: {
+    type: String,
+    required: true,
   },
   rentpayingDuration: {
     type: Number,
+    required: true,
   },
   propertyContractAddress: {
-    type: { type: String, unique: true },
+    type: String, 
+    unique: true,
   },
-  grossRent: {
+  grossRentPerYear: {
+    type: Number,
+    required: true,
+  },
+  grossRentPerMonth: {
+    type: Number,
+    required: true,
+  },
+  monthlyCosts: {
+    type: Number,
+    required: true,
+  },
+  propertyManagement: {
     type: Number,
   },
-  rentReceived: {
+  aconomyPlatform: {
     type: Number,
   },
-  totalRentPaid: {
+  maintenanceExpenses: {
     type: Number,
   },
-  rentInstallment: {
+  propertyTaxes: {
     type: Number,
   },
+  insurance: {
+    type: String,
+  },
+  utilities: {
+    type: String,
+  },
+  netRentPerMonth: {
+    type: Number,
+    required: true,
+  },
+  netRentPerYear: {
+    type: Number,
+    required: true,
+  },
+  totalInvestment: {
+    type: Number,
+    required: true,
+  },
+  underlyingAssetPrice: {
+    type: Number,
+  },
+  operatingExpenseReimbursement: {
+    type: Number,
+  },
+  initialMaintenanceReserve: {
+    type: Number,
+  },
+  initialRenovationReserve: {
+    type: Number,
+  },
+  administrativeFees: {
+    type: Number,
+  },
+  miscellaneousCosts: {
+    type: Number,
+  },
+  unroundedListingPrice: {
+    type: Number,
+  },
+  roundingDifference: {
+    type: Number,
+  },
+
+  // expectedIncome: {
+  //   type: Number,
+  //   required: true,
+  // },
+
+  // rentReceived: {
+  //   type: Number,
+  // },
+  // totalRentPaid: {
+  //   type: Number,
+  // },
+  // rentInstallment: {
+  //   type: Number,
+  // },
   rentHistory: [rentHistorySchema],
   withdrawHistory : [withdrawEarningSchema],
 
