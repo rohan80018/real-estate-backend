@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const BuySell = new mongoose.Schema({
+const BuySellSchema = new mongoose.Schema(
+    {
     property: {
         type: mongoose.Schema.ObjectId,
         ref: "Property",
@@ -15,7 +16,8 @@ const BuySell = new mongoose.Schema({
     },
     requestFor: {
         type: String,
-        enum: ["aconomy", "marketplace"],
+        enum: ["none","aconomy", "marketplace"],
+        default: "none",
     },
     status: {
         type: String,
@@ -28,4 +30,11 @@ const BuySell = new mongoose.Schema({
     tokenValue: {
         type: Number,
     },
-})
+    _saleId: {
+        type: Number,
+    }
+    },
+    { timestamps: true }
+);
+
+module.exports = mongoose.model("BuySell", BuySellSchema);
