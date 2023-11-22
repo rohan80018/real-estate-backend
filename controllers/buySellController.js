@@ -91,6 +91,7 @@ exports.sell = asyncHandler(async (req, res, next) => {
             {
               ...req.body,
               seller: id,
+              requestType: "sell",
             },
             async (err, doc) => {
               if (err) {
@@ -124,7 +125,7 @@ exports.cancelSale = asyncHandler(async (req, res, next) => {
     const { saleId } = req.body;
     try {
       const buysellObj = await BuySellModel.findOne({_saleId : saleId});
-      if(buysellObj && buysellObj.status!="accepted"){
+      if(buysellObj.status=="none"){
         BuySellModel.findOneAndUpdate(
             {_saleId : saleId},
             {      
@@ -153,7 +154,7 @@ exports.cancelSale = asyncHandler(async (req, res, next) => {
       } else {
         res
             .status(401)
-            .json({ success: false, message: "Already accepted" });    
+            .json({ success: false, message: "Already " + buysellObj.status });    
       }
     } catch (err) {
           console.log("error: " + err);

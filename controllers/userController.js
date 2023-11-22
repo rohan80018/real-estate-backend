@@ -19,7 +19,7 @@ exports.onboardUser = asyncHandler(async (req, res, next) => {
       if (user.username == username || user.email == email) {
         res.status(201).json({
           success: true,
-          massage: "username or email already in use",
+          message: "username or email already in use",
         });
       }
       else{
@@ -39,7 +39,7 @@ exports.onboardUser = asyncHandler(async (req, res, next) => {
     } else {
       res.status(201).json({
         success: true,
-        massage: "No user",
+        message: "No user",
       });
     }
   } catch (err) {
@@ -104,13 +104,13 @@ exports.fetchUsername = asyncHandler(async (req, res, next) => {
     if (user) {
       res.status(201).json({
         success: true,
-        massage: "user exists",
+        message: "user exists",
         user: user,
       });
     } else {
       res.status(201).json({
         success: true,
-        massage: "No user",
+        message: "No user",
       });
     }
   } catch (error) {
@@ -200,7 +200,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
       if (user.username == username || user.email == email) {
         res.status(201).json({
           success: true,
-          massage: "username or email already in use",
+          message: "username or email already in use",
         });
       }
       else{
@@ -230,7 +230,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     } else {
       res.status(201).json({
         success: true,
-        massage: "No user",
+        message: "No user",
       });
     }
   } catch (err) {
@@ -288,13 +288,13 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
     if (request) {
       res.status(201).json({
         success: true,
-        massage: "Request exists",
+        message: "Request exists",
         request: request,
       });
     } else {
       res.status(201).json({
         success: true,
-        massage: "No Request Found",
+        message: "No Request Found",
       });
     }
   } catch (error) {
