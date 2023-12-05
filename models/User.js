@@ -7,6 +7,7 @@ const withdrawEarningSchema = new mongoose.Schema(
       ref: "Property",
   },
       amount: Number,
+      withdrawnInstallment: Number,
   },
   { timestamps: true }
 

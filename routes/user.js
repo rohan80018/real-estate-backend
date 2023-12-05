@@ -75,7 +75,7 @@ router
   );
 
   router
-  .route("/withdrawearning/:requestId")
+  .route("/withdrawearning/:propertyId")
   .post(
     protect,
     authorize("user"),

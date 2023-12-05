@@ -122,70 +122,54 @@ exports.fetchUsername = asyncHandler(async (req, res, next) => {
 
 exports.withdrawEarning = asyncHandler(async (req, res, next) => {
   try {
-    const { withdrawnAmount } = req.body;
-    const { requestId } = req.params;
+    const { withdrawnAmount, withdrawnInstallment } = req.body;
+    const { propertyId } = req.params;
     const { wallet_address } = req.user;
-    RequestModel.findOneAndUpdate(
+
+    let userData = await UserModel.findOneAndUpdate(
+      { wallet_address },
       {
-        _id: requestId,
-      },
-      {
-        withdrawnAmount: withdrawnAmount,
-      },
-      null,
-      async (err, doc) => {
-        if (err) {
-          res.status(401).json({ success: false });
-        } else {
-          if (!!doc) {
-            let userData = await UserModel.findOneAndUpdate(
-              { wallet_address },
-              {
-                $push: {
-                  withdrawnHistory: {
-                    property: doc.property,
-                    amount: withdrawnAmount,
-                  },
-                },
-              }
-            );
-            if (userData) {
-              let propertyData = await PropertyModel.findOneAndUpdate(
-                { _id: doc.property },
-                {
-                  $push: {
-                    withdrawHistory: {
-                      user: userData._id,
-                      amount: withdrawnAmount,
-                    },
-                  },
-                }
-              );
-              if (propertyData) {
-                res.status(201).json({
-                  success: true,
-                  _id: doc._id,
-                  message: "Withdrawn",
-                });
-              } else {
-                res.status(400).json({
-                  success: false,
-                  message: "Withdrawn",
-                });
-              }
-            } else {
-              res
-                .status(400)
-                .json({ success: false, message: "userData not updated" });
-            }
-          } else {
-            res.status(400).json({ success: false, message: "Failed" });
-          }
-        }
+        $push: {
+          withdrawnHistory: {
+            property: propertyId,
+            amount: withdrawnAmount,
+            withdrawnInstallment: withdrawnInstallment,
+          },
+        },
       }
-    );
+    )
+    if (userData) {
+      let propertyData = await PropertyModel.findOneAndUpdate(
+        { _id: propertyId },
+        {
+          $push: {
+            withdrawHistory: {
+              user: userData._id,
+              amount: withdrawnAmount,
+              withdrawnInstallment: withdrawnInstallment,
+            },
+          },
+        }
+      );
+      if (propertyData) {
+        res.status(201).json({
+          success: true,
+          _id: propertyId,
+          message: "Withdrawn",
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "property not updated",
+        });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "userData not updated" });
+    }
   } catch (err) {
-    res.status(401).json({ success: false, message: "Failed to pay rent" });
+    res.status(401).json({ success: false, message: "Failed to withdraw" });
   }
 });
 

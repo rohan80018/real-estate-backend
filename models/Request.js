@@ -28,9 +28,6 @@ const RequestSchema = new mongoose.Schema (
         token: {
             type: Number,
         },
-        withdrawnAmount: {
-            type: Number,
-        },
     },
     { timestamps: true }
 )
