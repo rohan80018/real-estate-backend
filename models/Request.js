@@ -19,6 +19,9 @@ const RequestSchema = new mongoose.Schema (
             enum: ["none", "accepted", "rejected"],
             default: "none",
         },
+        orderId: {
+            type: Number,
+        },
         amount: {
             type: Number,
         },
