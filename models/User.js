@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    property: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Property",
+  },
     name: String,
     username: { type: String },
     email: {

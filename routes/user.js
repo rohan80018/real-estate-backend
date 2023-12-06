@@ -75,6 +75,13 @@ router
   );
 
   router
+  .route("/allproperty/:userId")
+  .get(
+    protect,
+    authorize("user", "admin"),
+    userController.AllProperty
+  );
+  router
   .route("/checkusername")
   .post(
     protect,

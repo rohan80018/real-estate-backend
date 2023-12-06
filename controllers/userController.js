@@ -118,6 +118,30 @@ exports.fetchUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+exports.AllProperty = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const user = await UserModel.find({
+      _id : userId,
+    });
+    if (user) {
+      res.status(201).json({
+        success: true,
+        message: "user data",
+        user: user.property,
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "No properties found",
+      });
+    }
+  } catch (err) {
+    res.status(400).json({ success: false });
+  }
+});
+
 exports.fetchUsername = asyncHandler(async (req, res, next) => {
   try {
     const { username } = req.body;
@@ -327,7 +351,10 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
           if (!!doc) {
             let userData = await UserModel.findOneAndUpdate(
               { _id : doc.user },
-              { whitelisted: true }
+              { 
+                whitelisted: true,
+                property: doc.property,
+              }
             );
             if (userData) {
               res
