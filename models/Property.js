@@ -41,17 +41,29 @@ const PropertySchema = new mongoose.Schema({
     },
     area: String,
   },
-  ownerName: {
-    type: String,
-    required: true,
+  propertyOwner: {
+    name: {
+      type: String,
+    },
+    image: {
+      type: String,
+    }
   },
-  issuerName: {
-    type: String,
-    required: true,
+  propertyIssuer: {
+    name: {
+      type: String,
+    },
+    image: {
+      type: String,
+    }
   },
-  validatorName: {
-    type: String,
-    required: true,
+  propertyValidator: {
+    name: {
+      type: String,
+    },
+    image: {
+      type: String,
+    }
   },
   about: {
     type: String,
