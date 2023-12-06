@@ -67,6 +67,14 @@ router
   );
 
   router
+  .route("/userprofile/:userId")
+  .get(
+    protect,
+    authorize("user", "admin"),
+    userController.fetchUser
+  );
+
+  router
   .route("/checkusername")
   .post(
     protect,

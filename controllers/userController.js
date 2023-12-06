@@ -95,6 +95,29 @@ exports.fetchUsers = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.fetchUser = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const user = await UserModel.findOne({
+      _id : userId,
+    });
+    if (user) {
+      res.status(201).json({
+        success: true,
+        message: "user data",
+        user: user,
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "No user",
+      });
+    }
+  } catch (err) {
+    res.status(400).json({ success: false });
+  }
+});
+
 exports.fetchUsername = asyncHandler(async (req, res, next) => {
   try {
     const { username } = req.body;
