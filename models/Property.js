@@ -45,7 +45,7 @@ const PropertySchema = new mongoose.Schema({
     name: {
       type: String,
     },
-    ownerImage: {
+    profileImage: {
       type: String,
     }
   },
@@ -61,7 +61,7 @@ const PropertySchema = new mongoose.Schema({
     name: {
       type: String,
     },
-    validatorImage: {
+    profileImage: {
       type: String,
     }
   },
