@@ -28,8 +28,8 @@ router
   router
   .route("/property/:propertyId")
   .get(
-      protect, 
-      authorize("user", "admin"),
+      // protect, 
+      // authorize("user", "admin"),
       propertyController.getProperty
     );
 
