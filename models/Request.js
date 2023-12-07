@@ -28,6 +28,19 @@ const RequestSchema = new mongoose.Schema (
         token: {
             type: Number,
         },
+        propertyName : String,
+        totalPrice : Number,
+        tokenPrice : Number,
+        rentPerToken : Number,
+        expectedIncome : Number,
+        rentStartDate : Number,
+        issuerProfilePic: String,
+        issuerName: String,
+        rentalType: String,
+        rented: String,
+        contract: String,
+        requestedToken: Number,
+        country: String,
     },
     { timestamps: true }
 )
