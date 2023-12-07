@@ -19,8 +19,8 @@ router
 router
 .route("/allProperties")
 .get(
-    protect, 
-    authorize("user", "admin"), 
+    // protect, 
+    // authorize("user", "admin"), 
     advancedResults(PropertyModel),
     propertyController.getAllProperties
   );
