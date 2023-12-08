@@ -223,18 +223,6 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
 exports.updateUser = asyncHandler(async (req, res, next) => {
   try {
     const { wallet_address } = req.user;
-    const { username, email } = req.body;
-    const user = await UserModel.findOne({
-      wallet_address: wallet_address,
-    });
-    if (user) {
-      if (user.username == username || user.email == email) {
-        res.status(201).json({
-          success: true,
-          message: "username or email already in use",
-        });
-      }
-      else{
         UserModel.findOneAndUpdate(
               { wallet_address },
               { ...req.body },
@@ -258,13 +246,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
               }
         );
       }
-    } else {
-      res.status(201).json({
-        success: true,
-        message: "No user",
-      });
-    }
-  } catch (err) {
+  catch (err) {
     res
       .status(400)
       .json({ success: false, message: "Profile failed to update" });
