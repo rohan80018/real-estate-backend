@@ -135,6 +135,10 @@ const PropertySchema = new mongoose.Schema({
     type: String, 
     unique: true,
   },
+  propertyId: {
+    type: Number, 
+    unique: true,
+  },
   grossRentPerYear: {
     type: Number,
     required: true,
