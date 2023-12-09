@@ -223,29 +223,58 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
 exports.updateUser = asyncHandler(async (req, res, next) => {
   try {
     const { wallet_address } = req.user;
-        UserModel.findOneAndUpdate(
-              { wallet_address },
-              { ...req.body },
-              { new: true },
-              async (err, doc) => {
-                if (err) {
+    const { username, email } = req.body;
+      //check duplicate username
+      const user_1 = await UserModel.findOne({
+          username,
+          wallet_address: {$ne: wallet_address}
+      });
+      if (user_1) {
+        res.status(201).json({
+          success: true,
+          message: "user with duplicate username exists",
+          user: user_1,
+        });
+      }
+      else{
+        //check duplicate email
+        const user_2 = await UserModel.findOne({
+          email,
+          wallet_address: {$ne: wallet_address}
+        });
+        if (user_2) {
+          res.status(201).json({
+            success: true,
+            message: "user with same email address exists",
+            user: user_2,
+          });
+        }
+        else {
+          UserModel.findOneAndUpdate(
+            { wallet_address },
+            { ...req.body },
+            { new: true },
+            async (err, doc) => {
+              if (err) {
+                res
+                  .status(400)
+                  .json({ success: false, message: "Profile failed to update", error: {err} });
+              } else {
+                if (!!doc) {
+                  res
+                    .status(201)
+                    .json({ success: true, message: "Profile successfully updated" });
+                } else {
                   res
                     .status(400)
-                    .json({ success: false, message: "Profile failed to update" });
-                } else {
-                  if (!!doc) {
-                    res
-                      .status(201)
-                      .json({ success: true, message: "Profile successfully updated" });
-                  } else {
-                    res
-                      .status(400)
-                      .json({ success: false, message: "Wrong wallet address" });
-                  }
+                    .json({ success: false, message: "Wrong wallet address" });
                 }
               }
-        );
+            }
+          );
+        }
       }
+    }
   catch (err) {
     res
       .status(400)
