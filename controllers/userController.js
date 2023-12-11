@@ -229,7 +229,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
           username,
           wallet_address: {$ne: wallet_address}
       });
-      if (user_1) {
+      if (username && user_1) {
         res.status(201).json({
           success: true,
           message: "user with duplicate username exists",
@@ -242,7 +242,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
           email,
           wallet_address: {$ne: wallet_address}
         });
-        if (user_2) {
+        if (email && user_2) {
           res.status(201).json({
             success: true,
             message: "user with same email address exists",
