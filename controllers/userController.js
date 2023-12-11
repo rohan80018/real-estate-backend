@@ -350,7 +350,7 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
 exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
   try {
     const { walletAddress } = req.params;
-    const request = await RequestModel.findOne({
+    const request = await RequestModel.find({
       walletAddress : walletAddress,
     });
     if (request) {
