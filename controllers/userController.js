@@ -355,7 +355,7 @@ exports.checkAdmin = asyncHandler(async (req, res, next) => {
     if (Property) {
       res.status(201).json({
         success: true,
-        message: "Admin exists",
+        message: "Owner exists",
       });
     } else {
       const newProperty = await PropertyModel.findOne({
@@ -364,7 +364,7 @@ exports.checkAdmin = asyncHandler(async (req, res, next) => {
       if (newProperty) {
         res.status(201).json({
           success: true,
-          message: "Admin exists",
+          message: "creator exists",
         });
       }
       else {
