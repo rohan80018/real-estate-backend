@@ -415,11 +415,46 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
       .json({ success: false, message: "Profile failed to update" });
   }
 });
+exports.rejectRequest = asyncHandler(async (req, res, next) => {
+  try {
+    const { requestId } = req.params;
+    RequestModel.findOneAndUpdate(
+      { _id: requestId },
+      { status: "rejected" },
+      { new: true },
+      async (err, doc) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ success: false, message: "Profile failed to update" });
+        } else {
+          if (!!doc) {
+              res
+                .status(201)
+                .json({
+                  success: true,
+                  message: "Request Rejected successfully",
+                });
+
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Wrong wallet address" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});
 
 exports.whitelistUser = asyncHandler(async (req, res, next) => {
   try {
     const { userId } = req.params;
-    RequestModel.findOneAndUpdate(
+    UserModel.findOneAndUpdate(
       { _id: userId },
       { whitelisted: req.body.whitelist },
       { new: true },

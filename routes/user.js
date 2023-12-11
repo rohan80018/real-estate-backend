@@ -59,6 +59,11 @@ router
 .put(protect, authorize("admin"), userController.acceptRequest);
 
 router
+.route("/rejectRequest/:requestId")
+.put(protect, authorize("admin"), userController.rejectRequest);
+
+
+router
 .route("/payRent/:propertyId")
 .put(
   protect,
