@@ -80,6 +80,14 @@ router
 );
 
 router
+  .route("/checkadmin/:walletAddress")
+  .get(
+    protect,
+    authorize("user", "admin"),
+    userController.checkAdmin
+  );
+
+router
   .route("/profile")
   .get(
     protect,

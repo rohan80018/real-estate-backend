@@ -346,6 +346,41 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.checkAdmin = asyncHandler(async (req, res, next) => {
+  try {
+    const { walletAddress } = req.params;
+    const Property = await PropertyModel.findOne({
+      propertyOwnerWalletAddress : walletAddress,
+    });
+    if (Property) {
+      res.status(201).json({
+        success: true,
+        message: "Admin exists",
+      });
+    } else {
+      const newProperty = await PropertyModel.findOne({
+        propertyCreatorWalletAddress : walletAddress
+      });
+      if (newProperty) {
+        res.status(201).json({
+          success: true,
+          message: "Admin exists",
+        });
+      }
+      else {
+        res.status(201).json({
+            success: true,
+            message: "No Admin Found",
+          });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+});
+
 
 exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
   try {
