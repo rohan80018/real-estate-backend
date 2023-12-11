@@ -67,6 +67,14 @@ router
 );
 
 router
+.route("/whitelist/:userId")
+.put(
+  protect,
+  authorize("admin"),
+  userController.whitelistUser
+);
+
+router
   .route("/profile")
   .get(
     protect,

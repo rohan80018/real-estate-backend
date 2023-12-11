@@ -415,3 +415,38 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
       .json({ success: false, message: "Profile failed to update" });
   }
 });
+
+exports.whitelistUser = asyncHandler(async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    RequestModel.findOneAndUpdate(
+      { _id: userId },
+      { whitelisted: req.body.whitelist },
+      { new: true },
+      async (err, doc) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ success: false, message: "Profile failed to whitelisted" });
+        } else {
+          if (!!doc) {
+              res
+                .status(201)
+                .json({
+                  success: true,
+                  message: "user whitelisted successfully",
+                });
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Wrong userId" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});
