@@ -9,7 +9,7 @@ exports.createProperty = asyncHandler(async (req, res, next) => {
       },
       async (err, doc) => {
         if (err) {
-          res.status(401).json({ success: false });
+          res.status(401).json({ success: false +err});
         } else {
           if (!!doc) {
             res.status(201).json({
@@ -51,13 +51,39 @@ exports.getProperty = asyncHandler(async (req, res, next) => {
     if (property) {
       res.status(201).json({
         success: true,
-        massage: "Property exists",
+        message: "Property exists",
         property: property,
       });
     } else {
       res.status(201).json({
         success: true,
-        massage: "No Property Found",
+        message: "No Property Found",
+      });
+    }
+  } catch (error) {
+    console.log("Error: " + error)
+    res.status(400).json({
+      success: false,
+    });
+  }
+});
+
+exports.ownerProperties = asyncHandler(async (req, res, next) => {
+  try {
+    const { walletAddress } = req.params;
+    const property = await PropertyModel.find({
+      propertyOwnerWalletAddress: walletAddress
+    });
+    if (!!property) {
+      res.status(201).json({
+        success: true,
+        message: "Property exists",
+        property: property,
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "No Property Found",
       });
     }
   } catch (error) {

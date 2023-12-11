@@ -25,12 +25,20 @@ router
     propertyController.getAllProperties
   );
 
-  router
+router
   .route("/property/:propertyId")
   .get(
       // protect, 
       // authorize("user", "admin"),
       propertyController.getProperty
+    );
+
+router
+  .route("/ownerProperties/:walletAddress")
+  .get(
+      protect, 
+      authorize("user"),
+      propertyController.ownerProperties
     );
 
 module.exports = router;
