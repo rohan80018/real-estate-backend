@@ -346,6 +346,32 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
   }
 });
 
+
+exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
+  try {
+    const { walletAddress } = req.params;
+    const request = await RequestModel.findOne({
+      walletAddress : walletAddress,
+    });
+    if (request) {
+      res.status(201).json({
+        success: true,
+        message: "Request exists",
+        request: request,
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "No Request Found",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+});
+
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {
     const { requestId } = req.params;

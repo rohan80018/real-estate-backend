@@ -28,6 +28,7 @@ const RequestSchema = new mongoose.Schema (
         token: {
             type: Number,
         },
+        walletAddress : String,
         propertyName : String,
         propertyImg : String,
         totalPrice : Number,

@@ -45,6 +45,15 @@ router
     userController.getRequest
   );
 
+  router
+  .route("/allrequests/:walletAddress")
+  .get(
+    protect,
+    authorize("user", "admin"),
+    advancedResults(RequestModel),
+    userController.allRequestsOfUser
+  );
+
 router
 .route("/acceptRequest/:requestId")
 .put(protect, authorize("admin"), userController.acceptRequest);
