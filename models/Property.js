@@ -65,6 +65,8 @@ const PropertySchema = new mongoose.Schema({
       type: String,
     }
   },
+  propertyOwnerWalletAddress : String,
+  propertyCreatorWalletAddress : String,
   about: {
     type: String,
     required: true,
