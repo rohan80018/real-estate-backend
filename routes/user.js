@@ -35,6 +35,15 @@ router
     advancedResults(RequestModel),
     userController.getAllRequests
   );
+router
+  .route("/allRequest/:type")
+  .get(
+      protect, 
+      authorize("admin"), 
+      // advancedResults(RequestModel),
+      userController.getAllBuyOrSellRequests
+    );
+  
 
   router
 .route("/request/:requestId")

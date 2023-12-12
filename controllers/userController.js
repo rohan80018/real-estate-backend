@@ -320,6 +320,30 @@ exports.getAllRequests = asyncHandler(async (req, res, next) => {
     res.status(400).json({ success: false });
   }
 });
+exports.getAllBuyOrSellRequests = asyncHandler(async (req, res, next) => {
+  try {
+    const { type } = req.params;
+    const request = await RequestModel.find({
+      requestType: type
+    });
+    if (request) {
+      res.status(201).json({
+        success: true,
+        message: "Request exists",
+        request: request,
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "No Request Found",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+});
 
 exports.getRequest = asyncHandler(async (req, res, next) => {
   try {
