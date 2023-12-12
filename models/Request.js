@@ -43,6 +43,7 @@ const RequestSchema = new mongoose.Schema (
         contract: String,
         requestedToken: Number,
         country: String,
+        propertyContractAddress: String,
     },
     { timestamps: true }
 )
