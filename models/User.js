@@ -13,6 +13,19 @@ const withdrawEarningSchema = new mongoose.Schema(
 
 );
 
+const propertyTokenSchema = new mongoose.Schema(
+  {
+    property: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Property",
+  },
+      Token: Number,
+      TotalToken: Number,
+  },
+  { timestamps: true }
+
+);
+
 const UserSchema = new mongoose.Schema(
   {
     wallet_address: {
@@ -58,6 +71,7 @@ const UserSchema = new mongoose.Schema(
     kycEventType: String,
     reviewStatus: String,
     withdrawnHistory: [withdrawEarningSchema],
+    propertyToken : [propertyTokenSchema,]
     
   },
   { timestamps: true }

@@ -213,15 +213,15 @@ const PropertySchema = new mongoose.Schema({
   //   required: true,
   // },
 
-  // rentReceived: {
-  //   type: Number,
-  // },
-  // totalRentPaid: {
-  //   type: Number,
-  // },
-  // rentInstallment: {
-  //   type: Number,
-  // },
+  rentReceived: {
+    type: Number,
+  },
+  totalRentPaid: {
+    type: Number,
+  },
+  rentInstallment: {
+    type: Number,
+  },
   rentHistory: [rentHistorySchema],
   withdrawHistory : [withdrawEarningSchema],
 

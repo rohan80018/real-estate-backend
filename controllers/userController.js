@@ -431,6 +431,17 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+{
+  grossRent: grossRent,
+  rentReceived: rentReceived,
+  $inc: { totalRentPaid: rentReceived, rentInstallment: 1 },
+  $push: {
+    rentHistory: {
+      amount: rentReceived,
+    },
+  },
+},
+
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {
     const { requestId } = req.params;
@@ -450,6 +461,13 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
               { 
                 whitelisted: true,
                 property: doc.property,
+                $push: {
+                  propertyToken: {
+                    property: doc.property,
+                    Token: doc.requestedToken,
+                    $inc: { TotalToken: doc.requestedToken},
+                  },
+                },
               }
             );
             if (userData) {
