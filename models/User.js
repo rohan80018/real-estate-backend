@@ -71,7 +71,7 @@ const UserSchema = new mongoose.Schema(
     kycEventType: String,
     reviewStatus: String,
     withdrawnHistory: [withdrawEarningSchema],
-    propertyToken : [propertyTokenSchema,]
+    propertyToken : [propertyTokenSchema],
     
   },
   { timestamps: true }
