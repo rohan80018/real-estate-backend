@@ -44,6 +44,7 @@ const RequestSchema = new mongoose.Schema (
         requestedToken: Number,
         country: String,
         propertyContractAddress: String,
+        username: String,
     },
     { timestamps: true }
 )
