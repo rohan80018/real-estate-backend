@@ -37,7 +37,7 @@ router
   .route("/ownerProperties/:walletAddress")
   .get(
       protect, 
-      authorize("user"),
+      authorize("user","admin"),
       propertyController.ownerProperties
     );
 
