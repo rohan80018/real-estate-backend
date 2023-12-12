@@ -431,16 +431,16 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-{
-  grossRent: grossRent,
-  rentReceived: rentReceived,
-  $inc: { totalRentPaid: rentReceived, rentInstallment: 1 },
-  $push: {
-    rentHistory: {
-      amount: rentReceived,
-    },
-  },
-},
+// {
+//   grossRent: grossRent,
+//   rentReceived: rentReceived,
+//   $inc: { totalRentPaid: rentReceived, rentInstallment: 1 },
+//   $push: {
+//     rentHistory: {
+//       amount: rentReceived,
+//     },
+//   },
+// },
 
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {
