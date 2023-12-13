@@ -12,7 +12,7 @@ const RequestSchema = new mongoose.Schema (
         },
         requestType: {
             type: String,
-            enum: ["buy", "sell"],
+            enum: ["buy", "sellToAconomy"],
         },
         status: {
             type: String,
