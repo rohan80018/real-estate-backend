@@ -431,16 +431,56 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-// {
-//   grossRent: grossRent,
-//   rentReceived: rentReceived,
-//   $inc: { totalRentPaid: rentReceived, rentInstallment: 1 },
-//   $push: {
-//     rentHistory: {
-//       amount: rentReceived,
-//     },
-//   },
-// },
+exports.acceptSellRequest = asyncHandler(async (req, res, next) => {
+  try {
+    const { requestId } = req.params;
+    RequestModel.findOneAndUpdate(
+      { _id: requestId },
+      { status: "accepted" },
+      { new: true },
+      async (err, doc) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ success: false, message: "Profile failed to update" });
+        } else {
+          if (!!doc) {
+            let userData = await UserModel.findOneAndUpdate(
+              { _id : doc.user },
+              { 
+                whitelisted: true,
+                property: doc.property,
+                $push: {
+                  propertyToken: {
+                    property: doc.property,
+                    Token: doc.requestedToken,
+                    $inc: { TotalToken: - doc.requestedToken},
+                  },
+                },
+              }
+            );
+            if (userData) {
+              res
+                .status(201)
+                .json({
+                  success: true,
+                  message: "Request Accepted successfully",
+                });
+            }
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Wrong wallet address" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});
 
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {

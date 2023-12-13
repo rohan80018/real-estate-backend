@@ -68,6 +68,10 @@ router
 .put(protect, authorize("admin"), userController.acceptRequest);
 
 router
+.route("/acceptSellRequest/:requestId")
+.put(protect, authorize("admin"), userController.acceptSellRequest);
+
+router
 .route("/rejectRequest/:requestId")
 .put(protect, authorize("admin"), userController.rejectRequest);
 
