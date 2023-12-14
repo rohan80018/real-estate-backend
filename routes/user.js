@@ -39,8 +39,7 @@ router
   .route("/allRequest/:type")
   .get(
       protect, 
-      authorize("admin"), 
-      // advancedResults(RequestModel),
+      authorize("user", "admin"), 
       userController.getAllBuyOrSellRequests
     );
   
@@ -50,7 +49,6 @@ router
 .get(
     protect, 
     authorize("user", "admin"), 
-    advancedResults(RequestModel),
     userController.getRequest
   );
 
@@ -59,7 +57,6 @@ router
   .get(
     protect,
     authorize("user", "admin"),
-    advancedResults(RequestModel),
     userController.allRequestsOfUser
   );
 

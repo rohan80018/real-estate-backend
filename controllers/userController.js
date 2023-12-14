@@ -322,23 +322,58 @@ exports.getAllRequests = asyncHandler(async (req, res, next) => {
 });
 exports.getAllBuyOrSellRequests = asyncHandler(async (req, res, next) => {
   try {
+    let query;
     const { type } = req.params;
-    const request = await RequestModel.find({
-      requestType: type
-    });
-    if (request) {
-      res.status(201).json({
-        success: true,
-        message: "Request exists",
-        request: request,
-      });
+
+    const { sortby } = req.query;
+
+    let queryStr = {
+      requestType: type,
+    };
+
+    query = RequestModel.find(queryStr)
+
+    if (sortby) {
+      const sortBy = sortby.split(",").join(" ");
+      query = query.sort(sortBy);
     } else {
-      res.status(201).json({
-        success: true,
-        message: "No Request Found",
-      });
+      query = query.sort("-createdAt");
     }
-  } catch (error) {
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 30;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await RequestModel.countDocuments(queryStr);
+    query = query.skip(startIndex).limit(limit);
+
+    const results = await query;
+
+    const pagination = {};
+
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+
+    return res.status(200).json({
+      success: true,
+      totalCount: total,
+      count: results.length,
+      pagination,
+      data: results,
+    });
+  }
+  catch (error) {
     res.status(400).json({
       success: false,
     });
