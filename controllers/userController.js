@@ -323,12 +323,13 @@ exports.getAllRequests = asyncHandler(async (req, res, next) => {
 exports.getAllBuyOrSellRequests = asyncHandler(async (req, res, next) => {
   try {
     let query;
-    const { type } = req.params;
+    const { type, propertyOwnerWalletAddress } = req.params;
 
     const { sortby } = req.query;
 
     let queryStr = {
       requestType: type,
+      propertyOwnerWalletAddress : propertyOwnerWalletAddress,
     };
 
     query = RequestModel.find(queryStr)

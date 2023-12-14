@@ -36,7 +36,7 @@ router
     userController.getAllRequests
   );
 router
-  .route("/allRequest/:type")
+  .route("/allRequest/:type/:propertyOwnerWalletAddress")
   .get(
       protect, 
       authorize("user", "admin"), 

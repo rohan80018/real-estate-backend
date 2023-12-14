@@ -45,6 +45,8 @@ const RequestSchema = new mongoose.Schema (
         country: String,
         propertyContractAddress: String,
         username: String,
+        propertyOwnerWalletAddress : String,
+        propertyCreatorWalletAddress : String,
     },
     { timestamps: true }
 )
