@@ -77,7 +77,7 @@ router
 .route("/payRent/:propertyId")
 .put(
   protect,
-  authorize("admin"),
+  authorize("user", "admin"),
   userController.payRent
 );
 
