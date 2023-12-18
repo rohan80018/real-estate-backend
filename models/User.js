@@ -19,7 +19,6 @@ const propertyTokenSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Property",
   },
-      Token: Number,
       TotalToken: Number,
   },
   { timestamps: true }

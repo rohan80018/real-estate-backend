@@ -521,6 +521,7 @@ exports.acceptSellRequest = asyncHandler(async (req, res, next) => {
 exports.acceptRequest = asyncHandler(async (req, res, next) => {
   try {
     const { requestId } = req.params;
+    let userData;
     RequestModel.findOneAndUpdate(
       { _id: requestId },
       { status: "accepted" },
@@ -532,20 +533,38 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
             .json({ success: false, message: "Profile failed to update" });
         } else {
           if (!!doc) {
-            let userData = await UserModel.findOneAndUpdate(
-              { _id : doc.user },
+            const data = await UserModel.find({ 
+              _id : doc.user,
+              "propertyToken.property": doc.property,
+           }); 
+           if(data.length) {
+            userData = await UserModel.findOneAndUpdate(
+              { _id : doc.user,
+                "propertyToken.property" : doc.property
+              },
+              { 
+                whitelisted: true,
+                property: doc.property,
+                  $inc: { "propertyToken.$.TotalToken": doc.requestedToken},
+              }
+            );
+           } else {
+            userData = await UserModel.findOneAndUpdate(
+              { _id : doc.user,
+              },
               { 
                 whitelisted: true,
                 property: doc.property,
                 $push: {
                   propertyToken: {
                     property: doc.property,
-                    Token: doc.requestedToken,
-                    $inc: { TotalToken: doc.requestedToken},
+                    TotalToken: doc.requestedToken,
                   },
                 },
               }
             );
+           }
+            
             if (userData) {
               res
                 .status(201)
