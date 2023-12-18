@@ -312,6 +312,36 @@ exports.buyRequest = asyncHandler(async (req, res, next) => {
       .json({ success: false, message: "Profile failed to update" });
   }
 });
+exports.sellRequest = asyncHandler(async (req, res, next) => {
+  try {
+    RequestModel.create(
+      {
+        ...req.body,
+      },
+      async (err, doc) => {
+        if (err) {
+          res.status(401).json({ success: false });
+        } else {
+          if (!!doc) {
+            res.status(201).json({
+              success: true,
+              _id: doc._id,
+              message: "Request successfully created",
+            });
+          } else {
+            res
+              .status(400)
+              .json({ success: false, message: "Failed to create property" });
+          }
+        }
+      }
+    );
+  } catch (err) {
+    res
+      .status(400)
+      .json({ success: false, message: "Profile failed to update" });
+  }
+});
 
 exports.getAllRequests = asyncHandler(async (req, res, next) => {
   try {
@@ -332,7 +362,12 @@ exports.getAllBuyOrSellRequests = asyncHandler(async (req, res, next) => {
       propertyOwnerWalletAddress : propertyOwnerWalletAddress,
     };
 
-    query = RequestModel.find(queryStr)
+    query = RequestModel.find(queryStr).populate([
+      {
+        path: "property",
+        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
+      },
+    ]);
 
     if (sortby) {
       const sortBy = sortby.split(",").join(" ");
@@ -386,7 +421,12 @@ exports.getRequest = asyncHandler(async (req, res, next) => {
     const { requestId } = req.params;
     const request = await RequestModel.findOne({
       _id : requestId,
-    });
+    }).populate([
+      {
+        path: "property",
+        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
+      },
+    ]);
     if (request) {
       res.status(201).json({
         success: true,
@@ -466,10 +506,35 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
     });
   }
 });
+exports.getAllAssetProperties = asyncHandler(async (req, res, next) => {
+  try {
+    const { walletAddress } = req.params;
+    const User = await UserModel.findOne(
+      { wallet_address: walletAddress }
+    ).populate([
+      {
+        path: "propertyToken.property",
+        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
+      },
+    ]);
+    
+    if(User){
+      res.status(200).json({
+        success: true,
+        data: User.propertyToken
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+});
 
 exports.acceptSellRequest = asyncHandler(async (req, res, next) => {
   try {
     const { requestId } = req.params;
+    let userData;
     RequestModel.findOneAndUpdate(
       { _id: requestId },
       { status: "accepted" },
@@ -481,20 +546,43 @@ exports.acceptSellRequest = asyncHandler(async (req, res, next) => {
             .json({ success: false, message: "Profile failed to update" });
         } else {
           if (!!doc) {
-            let userData = await UserModel.findOneAndUpdate(
-              { _id : doc.user },
+            const data = await UserModel.find({ 
+              _id : doc.user,
+              "propertyToken.property": doc.property,
+           }); 
+           if(data.length) {
+            userData = await UserModel.findOneAndUpdate(
+              { _id : doc.user,
+                "propertyToken.property" : doc.property
+              },
               { 
                 whitelisted: true,
                 property: doc.property,
-                $push: {
-                  propertyToken: {
-                    property: doc.property,
-                    Token: doc.requestedToken,
-                    $inc: { TotalToken: - doc.requestedToken},
-                  },
-                },
+                  $inc: { "propertyToken.$.TotalToken": -doc.requestedToken},
               }
             );
+           } else {
+              res
+                .status(400)
+                .json({
+                  success: false,
+                  message: "Property not found",
+                });
+            // userData = await UserModel.findOneAndUpdate(
+            //   { _id : doc.user,
+            //   },
+            //   { 
+            //     whitelisted: true,
+            //     property: doc.property,
+            //     $push: {
+            //       propertyToken: {
+            //         property: doc.property,
+            //         TotalToken: doc.requestedToken,
+            //       },
+            //     },
+            //   }
+            // );
+           }         
             if (userData) {
               res
                 .status(201)

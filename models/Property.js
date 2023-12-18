@@ -137,6 +137,9 @@ const PropertySchema = new mongoose.Schema({
     type: String, 
     unique: true,
   },
+  contract: {
+    type: String,
+  },
   propertyId: {
     type: Number, 
     unique: true,

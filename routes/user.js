@@ -28,6 +28,10 @@ router
 .post(protect, authorize("user"), userController.buyRequest);
 
 router
+.route("/sellRequest")
+.post(protect, authorize("user"), userController.sellRequest);
+
+router
 .route("/allRequests")
 .get(
     protect, 
@@ -59,6 +63,14 @@ router
     authorize("user", "admin"),
     userController.allRequestsOfUser
   );
+
+router
+  .route("/getAllAssetProperties/:walletAddress")
+  .get(
+      protect,
+      authorize("user", "admin"),
+      userController.getAllAssetProperties
+    );
 
 router
 .route("/acceptRequest/:requestId")
