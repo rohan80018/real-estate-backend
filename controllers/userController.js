@@ -490,7 +490,7 @@ exports.getAllAssetProperties = asyncHandler(async (req, res, next) => {
     ).populate([
       {
         path: "propertyToken.property",
-        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
+        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract propertyContractAddress propertyOwnerWalletAddress",
       },
     ]);
     
