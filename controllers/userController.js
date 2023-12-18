@@ -523,12 +523,12 @@ exports.acceptSellRequest = asyncHandler(async (req, res, next) => {
         } else {
           if (!!doc) {
             const data = await UserModel.find({ 
-              _id : doc.user,
+              wallet_address : doc.walletAddress,
               "propertyToken.property": doc.property,
            }); 
            if(data.length) {
             userData = await UserModel.findOneAndUpdate(
-              { _id : doc.user,
+              { wallet_address : doc.walletAddress,
                 "propertyToken.property" : doc.property
               },
               { 
@@ -598,12 +598,12 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
         } else {
           if (!!doc) {
             const data = await UserModel.find({ 
-              _id : doc.user,
+              wallet_address : doc.walletAddress,
               "propertyToken.property": doc.property,
            }); 
            if(data.length) {
             userData = await UserModel.findOneAndUpdate(
-              { _id : doc.user,
+              { wallet_address : doc.walletAddress,
                 "propertyToken.property" : doc.property
               },
               { 
@@ -614,7 +614,7 @@ exports.acceptRequest = asyncHandler(async (req, res, next) => {
             );
            } else {
             userData = await UserModel.findOneAndUpdate(
-              { _id : doc.user,
+              { wallet_address : doc.walletAddress,
               },
               { 
                 whitelisted: true,
