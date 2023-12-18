@@ -22,9 +22,9 @@ const RequestSchema = new mongoose.Schema (
         orderId: {
             type: Number,
         },
-        // amount: {
-        //     type: Number,
-        // },
+        amount: {
+            type: Number,
+        },
         requestedToken: {
             type: Number,
         },

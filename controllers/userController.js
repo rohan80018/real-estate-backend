@@ -336,7 +336,7 @@ exports.getAllBuyOrSellRequests = asyncHandler(async (req, res, next) => {
     query = RequestModel.find(queryStr).populate([
       {
         path: "property",
-        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
+        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract propertyContractAddress",
       },
     ]);
 
