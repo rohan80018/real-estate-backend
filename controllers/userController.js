@@ -487,7 +487,12 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
     const { walletAddress } = req.params;
     const request = await RequestModel.find({
       walletAddress : walletAddress,
-    });
+    }).populate([
+      {
+        path: "property",
+        select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
+      },
+    ]);
     if (request) {
       res.status(201).json({
         success: true,
