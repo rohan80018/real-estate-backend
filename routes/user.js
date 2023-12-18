@@ -24,12 +24,9 @@ router
 );
 
 router
-.route("/buyRequest")
-.post(protect, authorize("user"), userController.buyRequest);
+.route("/createRequest")
+.post(protect, authorize("user"), userController.createRequest);
 
-router
-.route("/sellRequest")
-.post(protect, authorize("user"), userController.sellRequest);
 
 router
 .route("/allRequests")

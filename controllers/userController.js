@@ -282,7 +282,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.buyRequest = asyncHandler(async (req, res, next) => {
+exports.createRequest = asyncHandler(async (req, res, next) => {
   try {
     RequestModel.create(
       {
@@ -312,36 +312,7 @@ exports.buyRequest = asyncHandler(async (req, res, next) => {
       .json({ success: false, message: "Profile failed to update" });
   }
 });
-exports.sellRequest = asyncHandler(async (req, res, next) => {
-  try {
-    RequestModel.create(
-      {
-        ...req.body,
-      },
-      async (err, doc) => {
-        if (err) {
-          res.status(401).json({ success: false });
-        } else {
-          if (!!doc) {
-            res.status(201).json({
-              success: true,
-              _id: doc._id,
-              message: "Request successfully created",
-            });
-          } else {
-            res
-              .status(400)
-              .json({ success: false, message: "Failed to create property" });
-          }
-        }
-      }
-    );
-  } catch (err) {
-    res
-      .status(400)
-      .json({ success: false, message: "Profile failed to update" });
-  }
-});
+
 
 exports.getAllRequests = asyncHandler(async (req, res, next) => {
   try {
