@@ -71,6 +71,42 @@ exports.payRent = asyncHandler(async (req, res, next) => {
           res.status(401).json({ success: false });
         } else {
           if (!!doc) {
+            const request = await RequestModel.find({
+              property: propertyId,
+              status: "accepted"
+            });
+            if(request.length){       
+              let user_arr = [...new Set(request.map((d)=> String(d.walletAddress)))];   
+              let total_tokens = 0;
+              for(let j=0;j<request.length;j++){
+                if(request[j].requestType=="buy")
+                  total_tokens+=request[j].requestedToken;
+                else
+                  total_tokens-=request[j].requestedToken;
+              }
+              for(let i=0;i<user_arr.length;i++){
+                let tokens = 0;
+                for(let j=0;j<request.length;j++){
+                  if(user_arr[i]==request[j].walletAddress){
+                    if(request[j].requestType=="buy")
+                      tokens+=request[j].requestedToken;
+                    else
+                      tokens-=request[j].requestedToken;
+                  }
+                }
+                console.log(tokens);
+                const data = await UserModel.findOneAndUpdate({
+                  _id : user_arr[i],  
+                  "propertyToken.property" : propertyId    
+                },{
+                  $push: {
+                    "propertyToken.$.rent": {
+                      "amount": rentReceived * tokens / total_tokens,
+                    }
+                  }
+                })
+              }
+            }
             res.status(201).json({
               success: true,
               _id: doc._id,
@@ -166,7 +202,43 @@ exports.fetchUsername = asyncHandler(async (req, res, next) => {
     });
   }
 });
-
+exports.getRentDetails = asyncHandler(async (req, res, next) => {
+  try{
+    // const { wallet_address } = req.user;
+    const { propertyId } = req.params;
+    console.log(req.user.wallet_address, propertyId)
+    let data = await UserModel.findOne({
+        wallet_address: req.user.wallet_address,
+      });
+      if (data) {
+        let specificPropertyToken = data.propertyToken.find(
+          x => x.property.toString() === propertyId
+        )
+        if(specificPropertyToken){
+          res.status(201).json({
+            success: true,
+            message: "Rent exists",
+            request: specificPropertyToken,
+          });
+        }
+        else{
+          res.status(201).json({
+            success: true,
+            message: "No Rent Found",
+          });
+        }
+      } else {
+        res.status(201).json({
+          success: true,
+          message: "No User Found",
+        });
+      }
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+      });
+    }
+});
 exports.withdrawEarning = asyncHandler(async (req, res, next) => {
   try {
     const { withdrawnAmount, withdrawnInstallment } = req.body;
@@ -186,6 +258,12 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
       }
     )
     if (userData) {
+      let specificPropertyToken = userData.propertyToken.find(
+        x => x.property.toString() === propertyId
+      )
+      specificPropertyToken.rent[withdrawnInstallment-1].status = "withdrawn";
+      await userData.save();
+
       let propertyData = await PropertyModel.findOneAndUpdate(
         { _id: propertyId },
         {
@@ -534,7 +612,7 @@ exports.acceptSellRequest = asyncHandler(async (req, res, next) => {
               { 
                 whitelisted: true,
                 property: doc.property,
-                  $inc: { "propertyToken.$.TotalToken": -doc.requestedToken},
+                $inc: { "propertyToken.$.TotalToken": -doc.requestedToken},  
               }
             );
            } else {

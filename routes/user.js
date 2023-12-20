@@ -70,6 +70,14 @@ router
     );
 
 router
+  .route("/getRentDetails/:propertyId")
+  .get(
+      protect,
+      authorize("user", "admin"),
+      userController.getRentDetails
+    );
+
+router
 .route("/acceptRequest/:requestId")
 .put(protect, authorize("admin"), userController.acceptRequest);
 

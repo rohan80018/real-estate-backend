@@ -18,8 +18,17 @@ const propertyTokenSchema = new mongoose.Schema(
     property: {
       type: mongoose.Schema.ObjectId,
       ref: "Property",
-  },
-      TotalToken: Number,
+    },
+    TotalToken: Number,
+    rent: [{
+      amount: Number,
+      status: {
+        type: String,
+        enum: ["none", "withdrawn"],
+        default: "none",
+      },
+      grossRentPerMonth: Number,
+    }]
   },
   { timestamps: true }
 
