@@ -76,7 +76,7 @@ exports.payRent = asyncHandler(async (req, res, next) => {
               status: "accepted"
             });
             if(request.length){       
-              let user_arr = [...new Set(request.map((d)=> d.walletAddress))];   
+              let user_arr = [...new Set(request.map((d)=> String(d.user)))];   
               let total_tokens = 0;
               for(let j=0;j<request.length;j++){
                 if(request[j].requestType=="buy")
@@ -87,7 +87,7 @@ exports.payRent = asyncHandler(async (req, res, next) => {
               for(let i=0;i<user_arr.length;i++){
                 let tokens = 0;
                 for(let j=0;j<request.length;j++){
-                  if(user_arr[i]==request[j].walletAddress){
+                  if(user_arr[i]==request[j].user){
                     if(request[j].requestType=="buy")
                       tokens+=request[j].requestedToken;
                     else
@@ -96,7 +96,7 @@ exports.payRent = asyncHandler(async (req, res, next) => {
                 }
                 console.log(tokens);
                 const data = await UserModel.findOneAndUpdate({
-                  wallet_address : user_arr[i],  
+                  _id : user_arr[i],  
                   "propertyToken.property" : propertyId    
                 },{
                   $push: {
