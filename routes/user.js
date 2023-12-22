@@ -153,6 +153,13 @@ router
     authorize("user"),
     userController.withdrawEarning
   );
+  router
+  .route("/withdrawearnings/:propertyId")
+  .post(
+    protect,
+    authorize("user"),
+    userController.withdrawEarnings
+  );
 
   router
   .route("/updateProfile")

@@ -13,6 +13,18 @@ const withdrawEarningSchema = new mongoose.Schema(
 
 );
 
+const rentSchema = new mongoose.Schema(
+  {
+    amount: Number,
+    status: {
+      type: String,
+      enum: ["none", "withdrawn"],
+      default: "none",
+    },
+    grossRentPerMonth: Number,
+  },
+  { timestamps: true }
+)
 const propertyTokenSchema = new mongoose.Schema(
   {
     property: {
@@ -20,15 +32,7 @@ const propertyTokenSchema = new mongoose.Schema(
       ref: "Property",
     },
     TotalToken: Number,
-    rent: [{
-      amount: Number,
-      status: {
-        type: String,
-        enum: ["none", "withdrawn"],
-        default: "none",
-      },
-      grossRentPerMonth: Number,
-    }]
+    rent: [rentSchema]
   },
   { timestamps: true }
 

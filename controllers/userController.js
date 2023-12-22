@@ -94,7 +94,6 @@ exports.payRent = asyncHandler(async (req, res, next) => {
                       tokens-=request[j].requestedToken;
                   }
                 }
-                console.log(tokens);
                 const data = await UserModel.findOneAndUpdate({
                   _id : user_arr[i],  
                   "propertyToken.property" : propertyId    
@@ -102,6 +101,7 @@ exports.payRent = asyncHandler(async (req, res, next) => {
                   $push: {
                     "propertyToken.$.rent": {
                       "amount": rentReceived * tokens / total_tokens,
+                      "grossRentPerMonth": grossRent
                     }
                   }
                 })
@@ -206,7 +206,6 @@ exports.getRentDetails = asyncHandler(async (req, res, next) => {
   try{
     // const { wallet_address } = req.user;
     const { propertyId } = req.params;
-    console.log(req.user.wallet_address, propertyId)
     let data = await UserModel.findOne({
         wallet_address: req.user.wallet_address,
       });
@@ -272,6 +271,65 @@ exports.withdrawEarning = asyncHandler(async (req, res, next) => {
               user: userData._id,
               amount: withdrawnAmount,
               withdrawnInstallment: withdrawnInstallment,
+            },
+          },
+        }
+      );
+      if (propertyData) {
+        res.status(201).json({
+          success: true,
+          _id: propertyId,
+          message: "Withdrawn",
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "property not updated",
+        });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "userData not updated" });
+    }
+  } catch (err) {
+    res.status(401).json({ success: false, message: "Failed to withdraw" });
+  }
+});
+
+exports.withdrawEarnings = asyncHandler(async (req, res, next) => {
+  try {
+    const { withdrawnAmount, startMonth, endMonth } = req.body;
+    const { propertyId } = req.params;
+    const { wallet_address } = req.user;
+    let userData = await UserModel.findOneAndUpdate(
+      { wallet_address },
+      {
+        $push: {
+          withdrawnHistory: {
+            property: propertyId,
+            amount: withdrawnAmount,
+            withdrawnInstallment: endMonth,
+          },
+        },
+      }
+    )
+    if (userData) {
+      let specificPropertyToken = userData.propertyToken.find(
+        x => x.property.toString() === propertyId
+      )
+      for( let i = startMonth-1; i < endMonth; i++)
+        specificPropertyToken.rent[i].status = "withdrawn";
+      await userData.save();
+
+      let propertyData = await PropertyModel.findOneAndUpdate(
+        { _id: propertyId },
+        {
+          $push: {
+            withdrawHistory: {
+              user: userData._id,
+              amount: withdrawnAmount,
+              withdrawnInstallment: endMonth,
             },
           },
         }
