@@ -15,6 +15,7 @@ const auth = require("./routes/auth");
 const user = require("./routes/user");
 const property = require("./routes/property");
 const buysell = require("./routes/buysell");
+const dashboard = require("./routes/dashboard");
 
 const app = express();
 app.use(cors({ origin: "*" }));
@@ -37,6 +38,7 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/property", property);
 app.use("/api/v1/user", user);
 app.use("/api/v1/buysell",buysell);
+app.use("/api/v1/dashboard", dashboard);
 
 // app.use(errorHandler);
 
