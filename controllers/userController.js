@@ -600,11 +600,31 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
         select: "propertyName mediaLinks about assetJurisdiction tokenPrice totalPrice rentPerToken expectedIncome rentStartDate propertyIssuer rentalType rented contract",
       },
     ]);
-    if (request) {
+    let data = request;
+    if (data) {
+      const { propertyName , rentalType, rented, contract, reqType, oldest } = req.query;
+      
+      if(propertyName)
+        data = data.filter((item) => item.property.propertyName == propertyName)
+      if(rentalType)
+        data = data.filter((item) => item.property.rentalType == rentalType)
+      if(rented)
+        data = data.filter((item) => item.property.rented == rented)
+      // if(contract)
+      //   data = data.filter((item) => item.property.contract == contract)
+      if(reqType)
+        data = data.filter((item) => item.requestType == reqType)
+
+      if(oldest)
+        data.sort((a, b) => a.updatedAt - b.updatedAt);
+      else{
+        data.sort((a, b) => b.updatedAt - a.updatedAt);
+      }
+
       res.status(201).json({
         success: true,
         message: "Request exists",
-        request: request,
+        request: data,
       });
     } else {
       res.status(201).json({
@@ -614,7 +634,7 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
     }
   } catch (error) {
     res.status(400).json({
-      success: false,
+      success: false+ error,
     });
   }
 });

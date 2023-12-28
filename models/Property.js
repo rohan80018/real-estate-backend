@@ -114,7 +114,7 @@ const PropertySchema = new mongoose.Schema({
     required: true,
   },
   rentSubsidy: {
-    type: Number,
+    type: String,
     required: true,
   },
   expectedIncome: {
@@ -130,7 +130,7 @@ const PropertySchema = new mongoose.Schema({
     required: true,
   },
   rentpayingDuration: {
-    type: Number,
+    type: String,
     required: true,
   },
   propertyContractAddress: {
