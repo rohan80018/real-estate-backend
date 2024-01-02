@@ -602,30 +602,56 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
     ]);
     let data = request;
     if (data) {
-      const { propertyName , rentalType, rented, contract, reqType, oldest } = req.query;
+      const { propertyName , rentalType, rented, contract, reqType, reqStatus, oldest } = req.query;
       
-      if(propertyName)
-        data = data.filter((item) => item.property.propertyName == propertyName)
-      if(rentalType)
-        data = data.filter((item) => item.property.rentalType == rentalType)
-      if(rented)
-        data = data.filter((item) => item.property.rented == rented)
-      // if(contract)
-      //   data = data.filter((item) => item.property.contract == contract)
-      if(reqType)
-        data = data.filter((item) => item.requestType == reqType)
+      
+      if(propertyName){
+        data = data.filter((item) => {
+          const regex = new RegExp(propertyName, 'i'); 
+          return regex.test(item.property.propertyName);
+        })
+      }
+        
+      if(rentalType){
+        const rentalTypeArray = rentalType.split(',');
+        data = data.filter((item) => rentalTypeArray.includes(item.property.rentalType)); 
+      }
+        
+      if(rented){
+        const rentedArray = rented.split(',');
+        data = data.filter((item) => rentedArray.includes(item.property.rented));  
+      }
+      if(contract=="Signed")
+        data = [];
+        // data = data.filter((item) => item.property.contract === contract)
+      if(reqType){
+        const reqTypeArray = reqType.split(',');
+        data = data.filter((item) => reqTypeArray.includes(item.requestType));  
+      } 
+      if(reqStatus){
+        const reqStatusArray = reqStatus.split(',');
+        data = data.filter((item) => reqStatusArray.includes(item.status));  
+      }
 
       if(oldest)
         data.sort((a, b) => a.updatedAt - b.updatedAt);
       else{
         data.sort((a, b) => b.updatedAt - a.updatedAt);
       }
-
-      res.status(201).json({
-        success: true,
-        message: "Request exists",
-        request: data,
-      });
+      if(data){
+        res.status(201).json({
+          success: true,
+          message: "Request exists",
+          request: data,
+        });
+      }
+      else{
+        res.status(201).json({
+          success: true,
+          message: "No Request with given conditions",
+        });
+      }
+      
     } else {
       res.status(201).json({
         success: true,
@@ -634,7 +660,7 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
     }
   } catch (error) {
     res.status(400).json({
-      success: false+ error,
+      success: false,
     });
   }
 });
