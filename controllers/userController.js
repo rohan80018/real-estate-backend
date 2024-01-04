@@ -602,7 +602,7 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
     ]);
     let data = request;
     if (data) {
-      const { propertyName , rentalType, rented, contract, reqType, reqStatus, oldest } = req.query;
+      const { propertyName , rentalType, rented, contract, reqType, reqStatus, sortBy } = req.query;
       
       
       if(propertyName){
@@ -633,7 +633,7 @@ exports.allRequestsOfUser = asyncHandler(async (req, res, next) => {
         data = data.filter((item) => reqStatusArray.includes(item.status));  
       }
 
-      if(oldest)
+      if(sortBy && sortBy=="Oldest")
         data.sort((a, b) => a.updatedAt - b.updatedAt);
       else{
         data.sort((a, b) => b.updatedAt - a.updatedAt);
